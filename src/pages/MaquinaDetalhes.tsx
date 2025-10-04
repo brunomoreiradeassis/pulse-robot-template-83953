@@ -406,61 +406,6 @@ const MaquinaDetalhes = () => {
           </Badge>
         </div>
 
-        {/* Indicadores de Saúde */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Activity className="h-4 w-4 text-green-500" />
-                Disponibilidade
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">95%</div>
-              <Progress value={95} className="mt-2" />
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-blue-500" />
-                Performance
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">91%</div>
-              <Progress value={91} className="mt-2" />
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Settings className="h-4 w-4 text-yellow-500" />
-                OEE
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">86%</div>
-              <Progress value={86} className="mt-2" />
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-red-500" />
-                Alertas Ativos
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">2</div>
-              <p className="text-xs text-muted-foreground mt-2">Requerem atenção</p>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Controles e Filtros */}
         <Card>
           <CardContent className="pt-6">
@@ -805,6 +750,61 @@ const MaquinaDetalhes = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Indicadores de Saúde */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <Activity className="h-4 w-4 text-green-500" />
+                Disponibilidade
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">95%</div>
+              <Progress value={95} className="mt-2" />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-blue-500" />
+                Performance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">91%</div>
+              <Progress value={91} className="mt-2" />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <Settings className="h-4 w-4 text-yellow-500" />
+                OEE
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">86%</div>
+              <Progress value={86} className="mt-2" />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-red-500" />
+                Alertas Ativos
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">2</div>
+              <p className="text-xs text-muted-foreground mt-2">Requerem atenção</p>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Legenda */}
         <Card>
