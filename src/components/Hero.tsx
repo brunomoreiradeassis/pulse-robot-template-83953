@@ -1,185 +1,139 @@
-
-import React, { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
-import LottieAnimation from "./LottieAnimation";
+import { ArrowRight, Code, Cpu, Layers, MessageSquare } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 const Hero = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
-  const [lottieData, setLottieData] = useState<any>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    // Check if mobile on mount and when window resizes
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  useEffect(() => {
-    fetch('/loop-header.lottie')
-      .then(response => response.json())
-      .then(data => setLottieData(data))
-      .catch(error => console.error("Error loading Lottie animation:", error));
-  }, []);
-
-  useEffect(() => {
-    // Skip effect on mobile
-    if (isMobile) return;
-    
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current || !imageRef.current) return;
-      
-      const {
-        left,
-        top,
-        width,
-        height
-      } = containerRef.current.getBoundingClientRect();
-      const x = (e.clientX - left) / width - 0.5;
-      const y = (e.clientY - top) / height - 0.5;
-
-      imageRef.current.style.transform = `perspective(1000px) rotateY(${x * 2.5}deg) rotateX(${-y * 2.5}deg) scale3d(1.02, 1.02, 1.02)`;
-    };
-    
-    const handleMouseLeave = () => {
-      if (!imageRef.current) return;
-      imageRef.current.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg) scale3d(1, 1, 1)`;
-    };
-    
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener("mousemove", handleMouseMove);
-      container.addEventListener("mouseleave", handleMouseLeave);
-    }
-    
-    return () => {
-      if (container) {
-        container.removeEventListener("mousemove", handleMouseMove);
-        container.removeEventListener("mouseleave", handleMouseLeave);
+  const isMobile = useIsMobile();
+  const containerVariants = {
+    hidden: {
+      opacity: 0
+    },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.3,
+        duration: 0.8
       }
-    };
-  }, [isMobile]);
+    }
+  };
+  const itemVariants = {
+    hidden: {
+      y: 20,
+      opacity: 0
+    },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.6
+      }
+    }
+  };
   
-  useEffect(() => {
-    // Skip parallax on mobile
-    if (isMobile) return;
-    
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const elements = document.querySelectorAll('.parallax');
-      elements.forEach(el => {
-        const element = el as HTMLElement;
-        const speed = parseFloat(element.dataset.speed || '0.1');
-        const yPos = -scrollY * speed;
-        element.style.setProperty('--parallax-y', `${yPos}px`);
+  const scrollToContact = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({
+        behavior: 'smooth'
       });
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMobile]);
+    }
+  };
   
-  return (
-    <section 
-      className="overflow-hidden relative bg-cover" 
-      id="hero" 
-      style={{
-        backgroundImage: 'url("/Header-background.webp")',
-        backgroundPosition: 'center 30%', 
-        padding: isMobile ? '100px 12px 40px' : '120px 20px 60px'
-      }}
-    >
-      <div className="absolute -top-[10%] -right-[5%] w-1/2 h-[70%] bg-pulse-gradient opacity-20 blur-3xl rounded-full"></div>
-      
-      <div className="container px-4 sm:px-6 lg:px-8" ref={containerRef}>
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 items-center">
-          <div className="w-full lg:w-1/2">
-            <div 
-              className="pulse-chip mb-3 sm:mb-6 opacity-0 animate-fade-in" 
-              style={{ animationDelay: "0.1s" }}
-            >
-              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-pulse-500 text-white mr-2">01</span>
-              <span>Purpose</span>
-            </div>
-            
-            <h1 
-              className="section-title text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-tight opacity-0 animate-fade-in" 
-              style={{ animationDelay: "0.3s" }}
-            >
-              Atlas: Where Code<br className="hidden sm:inline" />Meets Motion
-            </h1>
-            
-            <p 
-              style={{ animationDelay: "0.5s" }} 
-              className="section-subtitle mt-3 sm:mt-6 mb-4 sm:mb-8 leading-relaxed opacity-0 animate-fade-in text-gray-950 font-normal text-base sm:text-lg text-left"
-            >
-              The humanoid companion that learns and adapts alongside you.
-            </p>
-            
-            <div 
-              className="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-in" 
-              style={{ animationDelay: "0.7s" }}
-            >
-              <a 
-                href="#get-access" 
-                className="flex items-center justify-center group w-full sm:w-auto text-center" 
-                style={{
-                  backgroundColor: '#FE5C02',
-                  borderRadius: '1440px',
-                  boxSizing: 'border-box',
-                  color: '#FFFFFF',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  padding: '16px 24px', // Slightly reduced padding for mobile
-                  border: '1px solid white',
-                }}
-              >
-                Request Access
-                <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </a>
-            </div>
-          </div>
-          
-          <div className="w-full lg:w-1/2 relative mt-6 lg:mt-0">
-            {lottieData ? (
-              <div className="relative z-10 animate-fade-in" style={{ animationDelay: "0.9s" }}>
-                <LottieAnimation 
-                  animationPath={lottieData} 
-                  className="w-full h-auto max-w-lg mx-auto"
-                  loop={true}
-                  autoplay={true}
-                />
-              </div>
-            ) : (
-              <>
-              <div className="absolute inset-0 bg-dark-900 rounded-2xl sm:rounded-3xl -z-10 shadow-xl"></div>
-              <div className="relative transition-all duration-500 ease-out overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl">
-                <img 
-                  ref={imageRef} 
-                  src="/lovable-uploads/5663820f-6c97-4492-9210-9eaa1a8dc415.png" 
-                  alt="Atlas Robot" 
-                  className="w-full h-auto object-cover transition-transform duration-500 ease-out" 
-                  style={{ transformStyle: 'preserve-3d' }} 
-                />
-                <div className="absolute inset-0" style={{ backgroundImage: 'url("/hero-image.jpg")', backgroundSize: 'cover', backgroundPosition: 'center', mixBlendMode: 'overlay', opacity: 0.5 }}></div>
-              </div>
-              </>
-            )}
+  return <motion.div className="relative w-full" initial="hidden" animate="visible" variants={containerVariants}>
+      <div className="banner-container bg-black relative overflow-hidden h-[50vh] sm:h-[60vh] md:h-[500px] lg:h-[550px] xl:h-[600px] w-full">
+        <div className="absolute inset-0 bg-black w-full">
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline 
+            preload="metadata"
+            className={`w-full h-full object-cover opacity-70 grayscale ${isMobile ? 'object-right' : 'object-center'}`}
+            poster="/lovable-uploads/4bfa0d71-3ed2-4693-90b6-35142468907f.png"
+          >
+            <source src="/lovable-uploads/video_1751292840840_1751292842546.mp4" type="video/mp4" />
+            {/* Fallback image if video fails to load */}
+            <img 
+              src="/lovable-uploads/4bfa0d71-3ed2-4693-90b6-35142468907f.png" 
+              alt="WRLDS Technologies Connected People" 
+              className={`w-full h-full object-cover opacity-70 grayscale ${isMobile ? 'object-right' : 'object-center'}`} 
+            />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-white"></div>
+        </div>
+        
+        <div className="banner-overlay bg-transparent pt-20 sm:pt-24 md:pt-32 w-full">
+          <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center h-full">
+            <motion.div className="w-full max-w-4xl text-center" variants={itemVariants}>
+              <motion.h1 className="banner-title text-white" variants={itemVariants}>The Future of Smart Textile Technology is here.</motion.h1>
+              <motion.p className="banner-subtitle text-gray-300 mt-4 sm:mt-6" variants={itemVariants}>
+                We integrate AI-powered textile sensors into clothing, footwear, and wearables.
+              </motion.p>
+              <motion.div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8 justify-center items-center" variants={itemVariants}>
+                {/* Styled as a button but using an anchor tag for project navigation */}
+                <button 
+                  className="w-full sm:w-auto min-h-[44px] px-6 sm:px-8 py-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-all shadow-lg hover:shadow-xl hover:shadow-gray-300/20 flex items-center justify-center group text-sm sm:text-base font-medium"
+                  onClick={e => {
+                    e.preventDefault();
+                    const projectsSection = document.getElementById('projects');
+                    if (projectsSection) {
+                      projectsSection.scrollIntoView({
+                        behavior: 'smooth'
+                      });
+                    }
+                  }}
+                >
+                  Explore Projects
+                  <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+                
+                {/* Using the Button component from shadcn but with custom styling to match the explore button */}
+                <button 
+                  className="w-full sm:w-auto min-h-[44px] px-6 sm:px-8 py-3 bg-gray-700 text-white rounded-md hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl hover:shadow-gray-300/20 flex items-center justify-center group text-sm sm:text-base font-medium"
+                  onClick={scrollToContact}
+                >
+                  Contact Us
+                  <MessageSquare className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
+                </button>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </div>
       
-      <div className="hidden lg:block absolute bottom-0 left-1/4 w-64 h-64 bg-pulse-100/30 rounded-full blur-3xl -z-10 parallax" data-speed="0.05"></div>
-    </section>
-  );
+      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 mx-auto">
+        <motion.div className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4" variants={containerVariants} initial="hidden" animate="visible" transition={{
+        delay: 0.6
+      }}>
+          <motion.div className="bg-white p-4 md:p-5 rounded-xl shadow-sm border border-gray-100 transform transition-all duration-300 hover:-translate-y-1 hover:shadow-md" variants={itemVariants}>
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-100 flex items-center justify-center rounded-lg text-gray-500 mb-2 md:mb-3">
+              <Cpu className="w-5 h-5 md:w-6 md:h-6" />
+            </div>
+            <h3 className="text-base md:text-lg font-semibold mb-1 md:mb-2 text-gray-800">Smart Textiles</h3>
+            <p className="text-gray-600 text-xs md:text-sm">Intelligent fabric sensors that seamlessly integrate into clothing and footwear.</p>
+          </motion.div>
+          
+          <motion.div className="bg-white p-4 md:p-5 rounded-xl shadow-sm border border-gray-100 transform transition-all duration-300 hover:-translate-y-1 hover:shadow-md" variants={itemVariants}>
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-100 flex items-center justify-center rounded-lg text-gray-500 mb-2 md:mb-3">
+              <Code className="w-5 h-5 md:w-6 md:h-6" />
+            </div>
+            <h3 className="text-base md:text-lg font-semibold mb-1 md:mb-2 text-gray-800">Adaptive AI</h3>
+            <p className="text-gray-600 text-xs md:text-sm">Industry-specific algorithms that transform textile sensor data into meaningful insights.</p>
+          </motion.div>
+          
+          <motion.div className="bg-white p-4 md:p-5 rounded-xl shadow-sm border border-gray-100 transform transition-all duration-300 hover:-translate-y-1 hover:shadow-md" variants={itemVariants}>
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-100 flex items-center justify-center rounded-lg text-gray-500 mb-2 md:mb-3">
+              <Layers className="w-5 h-5 md:w-6 md:h-6" />
+            </div>
+            <h3 className="text-base md:text-lg font-semibold mb-1 md:mb-2 text-gray-800">Cross-Industry</h3>
+            <p className="text-gray-600 text-xs md:text-sm">Solutions for sports, military, healthcare, industrial, and professional environments.</p>
+          </motion.div>
+        </motion.div>
+      </div>
+    </motion.div>;
 };
 
 export default Hero;
