@@ -34,6 +34,20 @@ interface Peca {
   estoqueMinimo: number;
   fornecedor: string;
   tempoCritico: number;
+  valorUnitario: number;
+  dataUltimaCompra: string;
+  subPecas: string[];
+  maquinaId: string;
+}
+
+interface MaquinaComponente {
+  id: string;
+  nome: string;
+  x: number;
+  y: number;
+  tipo: string;
+  status: "Normal" | "Atenção" | "Crítico";
+  totalPecas: number;
 }
 
 interface Maquina {
@@ -52,13 +66,43 @@ interface HistoricoManutencao {
   descricao: string;
 }
 
+const maquinasComponentes: MaquinaComponente[] = [
+  {
+    id: "maq1",
+    nome: "Sistema Principal",
+    x: 200,
+    y: 200,
+    tipo: "Mecânico-Elétrico",
+    status: "Normal",
+    totalPecas: 4,
+  },
+  {
+    id: "maq2",
+    nome: "Sistema Hidráulico",
+    x: 500,
+    y: 200,
+    tipo: "Hidráulico",
+    status: "Atenção",
+    totalPecas: 3,
+  },
+  {
+    id: "maq3",
+    nome: "Sistema de Transmissão",
+    x: 350,
+    y: 350,
+    tipo: "Mecânico",
+    status: "Crítico",
+    totalPecas: 2,
+  },
+];
+
 const pecasFicticias: Peca[] = [
   {
     id: "motor",
     nome: "Motor Principal",
-    x: 150,
+    x: 250,
     y: 100,
-    conectadoCom: ["eixo", "bomba"],
+    conectadoCom: [],
     descricao: "Motor elétrico trifásico de 50HP",
     codigo: "MOT-001",
     status: "Normal",
@@ -72,13 +116,17 @@ const pecasFicticias: Peca[] = [
     estoqueMinimo: 1,
     fornecedor: "MotorTech LTDA",
     tempoCritico: 240,
+    valorUnitario: 15000,
+    dataUltimaCompra: "2024-06-20",
+    subPecas: ["motor-bobina", "motor-rotor"],
+    maquinaId: "maq1",
   },
   {
     id: "eixo",
     nome: "Eixo de Transmissão",
-    x: 400,
-    y: 100,
-    conectadoCom: ["motor", "engrenagem"],
+    x: 150,
+    y: 250,
+    conectadoCom: [],
     descricao: "Eixo de aço forjado com rolamentos de alta precisão",
     codigo: "EIX-002",
     status: "Normal",
@@ -92,13 +140,17 @@ const pecasFicticias: Peca[] = [
     estoqueMinimo: 1,
     fornecedor: "Mecânica Industrial",
     tempoCritico: 180,
+    valorUnitario: 4500,
+    dataUltimaCompra: "2024-08-10",
+    subPecas: ["eixo-rolamento-a", "eixo-rolamento-b"],
+    maquinaId: "maq1",
   },
   {
     id: "engrenagem",
     nome: "Conjunto de Engrenagens",
-    x: 650,
-    y: 100,
-    conectadoCom: ["eixo", "redutor"],
+    x: 350,
+    y: 250,
+    conectadoCom: [],
     descricao: "Sistema de engrenagens helicoidais",
     codigo: "ENG-003",
     status: "Atenção",
@@ -112,13 +164,17 @@ const pecasFicticias: Peca[] = [
     estoqueMinimo: 1,
     fornecedor: "Engrenagens Premium",
     tempoCritico: 96,
+    valorUnitario: 8700,
+    dataUltimaCompra: "2024-03-15",
+    subPecas: ["eng-primaria", "eng-secundaria", "eng-terciaria"],
+    maquinaId: "maq1",
   },
   {
     id: "redutor",
     nome: "Redutor de Velocidade",
-    x: 650,
+    x: 550,
     y: 250,
-    conectadoCom: ["engrenagem", "saida"],
+    conectadoCom: [],
     descricao: "Redutor planetário com relação 1:10",
     codigo: "RED-004",
     status: "Normal",
@@ -132,13 +188,17 @@ const pecasFicticias: Peca[] = [
     estoqueMinimo: 1,
     fornecedor: "Redutores S.A.",
     tempoCritico: 360,
+    valorUnitario: 12300,
+    dataUltimaCompra: "2024-05-22",
+    subPecas: ["red-engrenagem-planetaria"],
+    maquinaId: "maq1",
   },
   {
     id: "bomba",
     nome: "Bomba Hidráulica",
-    x: 150,
-    y: 250,
-    conectadoCom: ["motor", "valvula"],
+    x: 250,
+    y: 100,
+    conectadoCom: [],
     descricao: "Bomba centrífuga de alta vazão",
     codigo: "BOM-005",
     status: "Normal",
@@ -152,13 +212,17 @@ const pecasFicticias: Peca[] = [
     estoqueMinimo: 1,
     fornecedor: "Hidráulica Pro",
     tempoCritico: 120,
+    valorUnitario: 6800,
+    dataUltimaCompra: "2024-07-08",
+    subPecas: ["bomba-rotor", "bomba-vedacao"],
+    maquinaId: "maq2",
   },
   {
     id: "valvula",
     nome: "Válvula de Controle",
-    x: 400,
-    y: 250,
-    conectadoCom: ["bomba", "tanque"],
+    x: 350,
+    y: 200,
+    conectadoCom: [],
     descricao: "Válvula proporcional eletrônica",
     codigo: "VAL-006",
     status: "Crítico",
@@ -172,13 +236,17 @@ const pecasFicticias: Peca[] = [
     estoqueMinimo: 2,
     fornecedor: "Válvulas Tech",
     tempoCritico: 48,
+    valorUnitario: 3200,
+    dataUltimaCompra: "2024-02-18",
+    subPecas: ["valv-solenoide", "valv-corpo"],
+    maquinaId: "maq2",
   },
   {
     id: "tanque",
     nome: "Tanque Reservatório",
-    x: 400,
-    y: 400,
-    conectadoCom: ["valvula"],
+    x: 450,
+    y: 300,
+    conectadoCom: [],
     descricao: "Tanque de 200L em aço inox",
     codigo: "TAN-007",
     status: "Normal",
@@ -192,26 +260,58 @@ const pecasFicticias: Peca[] = [
     estoqueMinimo: 1,
     fornecedor: "Tanques Industriais",
     tempoCritico: 480,
+    valorUnitario: 5400,
+    dataUltimaCompra: "2024-04-25",
+    subPecas: [],
+    maquinaId: "maq2",
   },
   {
-    id: "saida",
-    nome: "Eixo de Saída",
-    x: 650,
-    y: 400,
-    conectadoCom: ["redutor"],
-    descricao: "Eixo principal de saída com acoplamento",
-    codigo: "SAI-008",
+    id: "acoplamento",
+    nome: "Acoplamento Flexível",
+    x: 300,
+    y: 250,
+    conectadoCom: [],
+    descricao: "Acoplamento de alto torque",
+    codigo: "ACP-009",
     status: "Normal",
     categoria: "Mecânica",
-    vidaUtil: 15000,
-    vidaUtilRestante: 13500,
-    ultimaManutencao: "2025-08-25",
-    proximaManutencao: "2026-01-25",
-    custoManutencao: 750,
+    vidaUtil: 18000,
+    vidaUtilRestante: 16500,
+    ultimaManutencao: "2025-08-01",
+    proximaManutencao: "2026-01-01",
+    custoManutencao: 650,
     emEstoque: 2,
     estoqueMinimo: 1,
     fornecedor: "Mecânica Industrial",
-    tempoCritico: 200,
+    tempoCritico: 220,
+    valorUnitario: 2800,
+    dataUltimaCompra: "2024-06-12",
+    subPecas: ["acp-elemento-elastico"],
+    maquinaId: "maq3",
+  },
+  {
+    id: "correia",
+    nome: "Correia Transportadora",
+    x: 450,
+    y: 250,
+    conectadoCom: [],
+    descricao: "Correia de alta resistência",
+    codigo: "COR-010",
+    status: "Atenção",
+    categoria: "Mecânica",
+    vidaUtil: 6000,
+    vidaUtilRestante: 1500,
+    ultimaManutencao: "2025-07-05",
+    proximaManutencao: "2025-10-25",
+    custoManutencao: 450,
+    emEstoque: 1,
+    estoqueMinimo: 2,
+    fornecedor: "Correias Express",
+    tempoCritico: 85,
+    valorUnitario: 1900,
+    dataUltimaCompra: "2024-09-03",
+    subPecas: [],
+    maquinaId: "maq3",
   },
 ];
 
@@ -248,6 +348,7 @@ const MaquinaDetalhes = () => {
   const [maquina, setMaquina] = useState<Maquina | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedPeca, setSelectedPeca] = useState<Peca | null>(null);
+  const [selectedMaquina, setSelectedMaquina] = useState<string | null>(null);
   const [modoExplodido, setModoExplodido] = useState(false);
   const [camadasVisiveis, setCamadasVisiveis] = useState<string[]>(["Mecânica", "Elétrica", "Hidráulica"]);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -315,10 +416,13 @@ const MaquinaDetalhes = () => {
     );
   };
 
-  // Memoiza a filtragem de peças por camada
+  // Memoiza a filtragem de peças por camada e máquina
   const pecasPorCamada = useMemo(() => {
-    return pecasFicticias.filter(peca => camadasVisiveis.includes(peca.categoria));
-  }, [camadasVisiveis]);
+    if (!selectedMaquina) return [];
+    return pecasFicticias.filter(peca => 
+      camadasVisiveis.includes(peca.categoria) && peca.maquinaId === selectedMaquina
+    );
+  }, [camadasVisiveis, selectedMaquina]);
 
   // Memoiza as posições explodidas
   const posicoesExplodidas = useMemo(() => {
@@ -370,6 +474,14 @@ const MaquinaDetalhes = () => {
   };
 
   const pecasExibiveis = pecasPorCamada;
+  
+  const handleMaquinaClick = (maquinaId: string) => {
+    setSelectedMaquina(maquinaId);
+  };
+  
+  const handleVoltar = () => {
+    setSelectedMaquina(null);
+  };
 
   if (loading) {
     return (
@@ -412,44 +524,57 @@ const MaquinaDetalhes = () => {
             <div className="flex items-center gap-4 flex-wrap">
               <CardTitle>Diagrama de Componentes</CardTitle>
               
-              <div className="flex items-center gap-2">
-                <Button
-                  variant={modoExplodido ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setModoExplodido(!modoExplodido)}
-                >
-                  <BoxSelect className="h-4 w-4 mr-2" />
-                  Modo Explodido
-                </Button>
-              </div>
-              
-              <Separator orientation="vertical" className="h-6" />
-              
-              <div className="flex items-center gap-2">
-                <Layers className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Camadas:</span>
-                <Button
-                  variant={camadasVisiveis.includes("Mecânica") ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => toggleCamada("Mecânica")}
-                >
-                  Mecânica
-                </Button>
-                <Button
-                  variant={camadasVisiveis.includes("Elétrica") ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => toggleCamada("Elétrica")}
-                >
-                  Elétrica
-                </Button>
-                <Button
-                  variant={camadasVisiveis.includes("Hidráulica") ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => toggleCamada("Hidráulica")}
-                >
-                  Hidráulica
-                </Button>
-              </div>
+              {selectedMaquina && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleVoltar}
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Voltar
+                  </Button>
+                  
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant={modoExplodido ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setModoExplodido(!modoExplodido)}
+                    >
+                      <BoxSelect className="h-4 w-4 mr-2" />
+                      Modo Explodido
+                    </Button>
+                  </div>
+                  
+                  <Separator orientation="vertical" className="h-6" />
+                  
+                  <div className="flex items-center gap-2">
+                    <Layers className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">Camadas:</span>
+                    <Button
+                      variant={camadasVisiveis.includes("Mecânica") ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => toggleCamada("Mecânica")}
+                    >
+                      Mecânica
+                    </Button>
+                    <Button
+                      variant={camadasVisiveis.includes("Elétrica") ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => toggleCamada("Elétrica")}
+                    >
+                      Elétrica
+                    </Button>
+                    <Button
+                      variant={camadasVisiveis.includes("Hidráulica") ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => toggleCamada("Hidráulica")}
+                    >
+                      Hidráulica
+                    </Button>
+                  </div>
+                </>
+              )}
             </div>
             
             <Button 
@@ -520,224 +645,361 @@ const MaquinaDetalhes = () => {
                           </filter>
                         </defs>
 
-                        {/* Linhas de conexão com curvas suaves */}
-                        {pecasExibiveis.map((peca) =>
-                          peca.conectadoCom.map((conectadoId) => {
-                            const pecaConectada = pecasFicticias.find(
-                              (p) => p.id === conectadoId
-                            );
-                            if (!pecaConectada || !camadasVisiveis.includes(pecaConectada.categoria)) return null;
-                            
-                            const posOrigem = getPosicaoExplodida(peca);
-                            const posDestino = getPosicaoExplodida(pecaConectada);
-                            
-                            // Criar path curvo entre os blocos
-                            const midX = (posOrigem.x + posDestino.x) / 2;
-                            const midY = (posOrigem.y + posDestino.y) / 2;
-                            const controlX = midX;
-                            const controlY = midY + (posDestino.y > posOrigem.y ? -30 : 30);
+                        {/* Renderizar Máquinas ou Peças baseado na seleção */}
+                        {!selectedMaquina ? (
+                          // Renderizar máquinas
+                          maquinasComponentes.map((maquina) => {
+                            const statusColor = maquina.status === "Crítico" ? "#ef4444" : 
+                                              maquina.status === "Atenção" ? "#f59e0b" : "#10b981";
                             
                             return (
-                              <g key={`${peca.id}-${conectadoId}`}>
-                                {/* Linha de base com glow */}
-                                <path
-                                  d={`M ${posOrigem.x + 70} ${posOrigem.y} Q ${controlX} ${controlY} ${posDestino.x - 70} ${posDestino.y}`}
-                                  stroke="url(#connectionGradient)"
-                                  strokeWidth="3"
-                                  fill="none"
-                                  opacity={modoExplodido ? 0.4 : 0.7}
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  filter="url(#glow)"
-                                />
-                                {/* Linha secundária mais fina para profundidade */}
-                                <path
-                                  d={`M ${posOrigem.x + 70} ${posOrigem.y} Q ${controlX} ${controlY} ${posDestino.x - 70} ${posDestino.y}`}
-                                  stroke="hsl(var(--primary))"
-                                  strokeWidth="1.5"
-                                  fill="none"
-                                  opacity={modoExplodido ? 0.6 : 0.9}
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                                {/* Seta moderna no final */}
-                                <polygon
-                                  points={`${posDestino.x - 70},${posDestino.y} ${posDestino.x - 80},${posDestino.y - 5} ${posDestino.x - 80},${posDestino.y + 5}`}
+                              <g
+                                key={maquina.id}
+                                onClick={() => handleMaquinaClick(maquina.id)}
+                                style={{ cursor: "pointer" }}
+                                className="transition-all hover:opacity-95"
+                                filter="url(#shadow)"
+                              >
+                                {/* Camada de fundo para profundidade */}
+                                <rect
+                                  x={maquina.x - 84}
+                                  y={maquina.y - 48}
+                                  width="168"
+                                  height="98"
+                                  rx="20"
+                                  ry="20"
                                   fill="hsl(var(--primary))"
-                                  opacity={modoExplodido ? 0.6 : 0.9}
-                                  filter="url(#glow)"
+                                  opacity="0.05"
                                 />
-                              </g>
-                            );
-                          })
-                        )}
-
-                        {/* Blocos de peças estilo flowchart */}
-                        {pecasExibiveis.map((peca) => {
-                          const pos = getPosicaoExplodida(peca);
-                          const statusColor = peca.status === "Crítico" ? "#ef4444" : 
-                                            peca.status === "Atenção" ? "#f59e0b" : "#10b981";
-                          
-                          return (
-                            <g
-                              key={peca.id}
-                              onClick={() => setSelectedPeca(peca)}
-                              style={{ cursor: "pointer" }}
-                              className="transition-all hover:opacity-95"
-                              filter="url(#shadow)"
-                            >
-                              {/* Camada de fundo para profundidade */}
-                              <rect
-                                x={pos.x - 69}
-                                y={pos.y - 33}
-                                width="138"
-                                height="68"
-                                rx="16"
-                                ry="16"
-                                fill="hsl(var(--primary))"
-                                opacity="0.05"
-                              />
-                              
-                              {/* Bloco principal com gradiente */}
-                              <rect
-                                x={pos.x - 70}
-                                y={pos.y - 35}
-                                width="140"
-                                height="70"
-                                rx="16"
-                                ry="16"
-                                fill="url(#cardGradient)"
-                                stroke="hsl(var(--border))"
-                                strokeWidth="1.5"
-                                className="transition-all"
-                              />
-                              
-                              {/* Brilho sutil no topo */}
-                              <rect
-                                x={pos.x - 68}
-                                y={pos.y - 33}
-                                width="136"
-                                height="20"
-                                rx="16"
-                                ry="16"
-                                fill="hsl(var(--primary))"
-                                opacity="0.03"
-                              />
-                              
-                              {/* Barra de status moderna no topo */}
-                              <rect
-                                x={pos.x - 70}
-                                y={pos.y - 35}
-                                width="140"
-                                height="6"
-                                rx="16"
-                                ry="16"
-                                fill={statusColor}
-                                opacity="0.9"
-                              />
-                              
-                              {/* Linha de destaque sutil na lateral */}
-                              <rect
-                                x={pos.x - 70}
-                                y={pos.y - 30}
-                                width="3"
-                                height="60"
-                                rx="2"
-                                ry="2"
-                                fill={statusColor}
-                                opacity="0.4"
-                              />
-
-                              {/* Ícone de categoria */}
-                              <text
-                                x={pos.x - 55}
-                                y={pos.y - 8}
-                                fontSize="20"
-                                style={{ pointerEvents: "none" }}
-                              >
-                                {getCategoriaIcon(peca.categoria)}
-                              </text>
-
-                              {/* Código da peça */}
-                              <text
-                                x={pos.x - 25}
-                                y={pos.y - 12}
-                                textAnchor="start"
-                                className="text-xs font-bold fill-foreground"
-                                style={{ pointerEvents: "none" }}
-                              >
-                                {peca.codigo}
-                              </text>
-
-                              {/* Nome da peça */}
-                              <text
-                                x={pos.x}
-                                y={pos.y + 8}
-                                textAnchor="middle"
-                                className="text-[10px] fill-muted-foreground"
-                                style={{ pointerEvents: "none" }}
-                              >
-                                {peca.nome.length > 20 ? peca.nome.substring(0, 18) + '...' : peca.nome}
-                              </text>
-
-                              {/* Badge de status */}
-                              <g transform={`translate(${pos.x + 40}, ${pos.y - 8})`}>
-                                <circle
-                                  r="10"
+                                
+                                {/* Bloco principal com gradiente */}
+                                <rect
+                                  x={maquina.x - 85}
+                                  y={maquina.y - 50}
+                                  width="170"
+                                  height="100"
+                                  rx="20"
+                                  ry="20"
+                                  fill="url(#cardGradient)"
+                                  stroke="hsl(var(--border))"
+                                  strokeWidth="2"
+                                  className="transition-all"
+                                />
+                                
+                                {/* Barra de status moderna no topo */}
+                                <rect
+                                  x={maquina.x - 85}
+                                  y={maquina.y - 50}
+                                  width="170"
+                                  height="8"
+                                  rx="20"
+                                  ry="20"
                                   fill={statusColor}
                                   opacity="0.9"
                                 />
+
+                                {/* Nome da máquina */}
                                 <text
+                                  x={maquina.x}
+                                  y={maquina.y - 15}
                                   textAnchor="middle"
-                                  dominantBaseline="middle"
-                                  fontSize="10"
-                                  fill="white"
+                                  className="text-sm font-bold fill-foreground"
                                   style={{ pointerEvents: "none" }}
                                 >
-                                  {getStatusIcon(peca.status)}
+                                  {maquina.nome}
                                 </text>
-                              </g>
 
-                              {/* Indicador de estoque baixo */}
-                              {peca.emEstoque <= peca.estoqueMinimo && (
-                                <g transform={`translate(${pos.x + 55}, ${pos.y + 15})`}>
+                                {/* Tipo */}
+                                <text
+                                  x={maquina.x}
+                                  y={maquina.y + 5}
+                                  textAnchor="middle"
+                                  className="text-xs fill-muted-foreground"
+                                  style={{ pointerEvents: "none" }}
+                                >
+                                  {maquina.tipo}
+                                </text>
+
+                                {/* Total de peças */}
+                                <text
+                                  x={maquina.x}
+                                  y={maquina.y + 25}
+                                  textAnchor="middle"
+                                  className="text-xs fill-muted-foreground"
+                                  style={{ pointerEvents: "none" }}
+                                >
+                                  {maquina.totalPecas} peças
+                                </text>
+
+                                {/* Badge de status */}
+                                <g transform={`translate(${maquina.x + 60}, ${maquina.y - 25})`}>
                                   <circle
-                                    r="8"
-                                    fill="#f59e0b"
+                                    r="12"
+                                    fill={statusColor}
                                     opacity="0.9"
                                   />
                                   <text
                                     textAnchor="middle"
                                     dominantBaseline="middle"
-                                    fontSize="10"
+                                    fontSize="12"
                                     fill="white"
-                                    fontWeight="bold"
                                     style={{ pointerEvents: "none" }}
                                   >
-                                    !
+                                    {maquina.status === "Crítico" ? "⚠️" : maquina.status === "Atenção" ? "⚠" : "✓"}
                                   </text>
                                 </g>
-                              )}
-
-                              {/* Barra de vida útil */}
-                              <g transform={`translate(${pos.x - 60}, ${pos.y + 20})`}>
-                                <rect
-                                  width="120"
-                                  height="4"
-                                  rx="2"
-                                  fill="hsl(var(--muted))"
-                                />
-                                <rect
-                                  width={120 * (peca.vidaUtilRestante / peca.vidaUtil)}
-                                  height="4"
-                                  rx="2"
-                                  fill={peca.vidaUtilRestante / peca.vidaUtil > 0.5 ? "#10b981" : 
-                                       peca.vidaUtilRestante / peca.vidaUtil > 0.3 ? "#f59e0b" : "#ef4444"}
-                                />
                               </g>
+                            );
+                          })
+                        ) : (
+                          <>
+                            {/* Máquina Central */}
+                            <g filter="url(#shadow)">
+                              <rect
+                                x="345"
+                                y="245"
+                                width="210"
+                                height="120"
+                                rx="25"
+                                ry="25"
+                                fill="url(#cardGradient)"
+                                stroke="hsl(var(--primary))"
+                                strokeWidth="3"
+                              />
+                              <text
+                                x="450"
+                                y="295"
+                                textAnchor="middle"
+                                className="text-lg font-bold fill-foreground"
+                                style={{ pointerEvents: "none" }}
+                              >
+                                {maquinasComponentes.find(m => m.id === selectedMaquina)?.nome}
+                              </text>
+                              <text
+                                x="450"
+                                y="315"
+                                textAnchor="middle"
+                                className="text-sm fill-muted-foreground"
+                                style={{ pointerEvents: "none" }}
+                              >
+                                Sistema Principal
+                              </text>
                             </g>
-                          );
-                        })}
+
+                            {/* Linhas de conexão da máquina central para cada peça */}
+                            {pecasExibiveis.map((peca) => {
+                              const pos = getPosicaoExplodida(peca);
+                              const centerX = 450;
+                              const centerY = 305;
+                              
+                              // Criar path curvo da máquina central para a peça
+                              const midX = (centerX + pos.x) / 2;
+                              const midY = (centerY + pos.y) / 2;
+                              const controlX = midX;
+                              const controlY = midY + (pos.y > centerY ? -30 : 30);
+                              
+                              return (
+                                <g key={`conn-${peca.id}`}>
+                                  {/* Linha de base com glow */}
+                                  <path
+                                    d={`M ${centerX} ${centerY} Q ${controlX} ${controlY} ${pos.x} ${pos.y}`}
+                                    stroke="url(#connectionGradient)"
+                                    strokeWidth="3"
+                                    fill="none"
+                                    opacity={0.7}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    filter="url(#glow)"
+                                  />
+                                  {/* Linha secundária mais fina para profundidade */}
+                                  <path
+                                    d={`M ${centerX} ${centerY} Q ${controlX} ${controlY} ${pos.x} ${pos.y}`}
+                                    stroke="hsl(var(--primary))"
+                                    strokeWidth="1.5"
+                                    fill="none"
+                                    opacity={0.9}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                  {/* Seta moderna no final */}
+                                  <polygon
+                                    points={`${pos.x},${pos.y} ${pos.x - 8},${pos.y - 5} ${pos.x - 8},${pos.y + 5}`}
+                                    fill="hsl(var(--primary))"
+                                    opacity={0.9}
+                                    filter="url(#glow)"
+                                  />
+                                </g>
+                              );
+                            })}
+
+                            {/* Blocos de peças estilo flowchart */}
+                            {pecasExibiveis.map((peca) => {
+                              const pos = getPosicaoExplodida(peca);
+                              const statusColor = peca.status === "Crítico" ? "#ef4444" : 
+                                                peca.status === "Atenção" ? "#f59e0b" : "#10b981";
+                              
+                              return (
+                                <g
+                                  key={peca.id}
+                                  onClick={() => setSelectedPeca(peca)}
+                                  style={{ cursor: "pointer" }}
+                                  className="transition-all hover:opacity-95"
+                                  filter="url(#shadow)"
+                                >
+                                  {/* Camada de fundo para profundidade */}
+                                  <rect
+                                    x={pos.x - 69}
+                                    y={pos.y - 33}
+                                    width="138"
+                                    height="68"
+                                    rx="16"
+                                    ry="16"
+                                    fill="hsl(var(--primary))"
+                                    opacity="0.05"
+                                  />
+                                  
+                                  {/* Bloco principal com gradiente */}
+                                  <rect
+                                    x={pos.x - 70}
+                                    y={pos.y - 35}
+                                    width="140"
+                                    height="70"
+                                    rx="16"
+                                    ry="16"
+                                    fill="url(#cardGradient)"
+                                    stroke="hsl(var(--border))"
+                                    strokeWidth="1.5"
+                                    className="transition-all"
+                                  />
+                                  
+                                  {/* Brilho sutil no topo */}
+                                  <rect
+                                    x={pos.x - 68}
+                                    y={pos.y - 33}
+                                    width="136"
+                                    height="20"
+                                    rx="16"
+                                    ry="16"
+                                    fill="hsl(var(--primary))"
+                                    opacity="0.03"
+                                  />
+                                  
+                                  {/* Barra de status moderna no topo */}
+                                  <rect
+                                    x={pos.x - 70}
+                                    y={pos.y - 35}
+                                    width="140"
+                                    height="6"
+                                    rx="16"
+                                    ry="16"
+                                    fill={statusColor}
+                                    opacity="0.9"
+                                  />
+                                  
+                                  {/* Linha de destaque sutil na lateral */}
+                                  <rect
+                                    x={pos.x - 70}
+                                    y={pos.y - 30}
+                                    width="3"
+                                    height="60"
+                                    rx="2"
+                                    ry="2"
+                                    fill={statusColor}
+                                    opacity="0.4"
+                                  />
+
+                                  {/* Ícone de categoria */}
+                                  <text
+                                    x={pos.x - 55}
+                                    y={pos.y - 8}
+                                    fontSize="20"
+                                    style={{ pointerEvents: "none" }}
+                                  >
+                                    {getCategoriaIcon(peca.categoria)}
+                                  </text>
+
+                                  {/* Código da peça */}
+                                  <text
+                                    x={pos.x - 25}
+                                    y={pos.y - 12}
+                                    textAnchor="start"
+                                    className="text-xs font-bold fill-foreground"
+                                    style={{ pointerEvents: "none" }}
+                                  >
+                                    {peca.codigo}
+                                  </text>
+
+                                  {/* Nome da peça */}
+                                  <text
+                                    x={pos.x}
+                                    y={pos.y + 8}
+                                    textAnchor="middle"
+                                    className="text-[10px] fill-muted-foreground"
+                                    style={{ pointerEvents: "none" }}
+                                  >
+                                    {peca.nome.length > 20 ? peca.nome.substring(0, 18) + '...' : peca.nome}
+                                  </text>
+
+                                  {/* Badge de status */}
+                                  <g transform={`translate(${pos.x + 40}, ${pos.y - 8})`}>
+                                    <circle
+                                      r="10"
+                                      fill={statusColor}
+                                      opacity="0.9"
+                                    />
+                                    <text
+                                      textAnchor="middle"
+                                      dominantBaseline="middle"
+                                      fontSize="10"
+                                      fill="white"
+                                      style={{ pointerEvents: "none" }}
+                                    >
+                                      {getStatusIcon(peca.status)}
+                                    </text>
+                                  </g>
+
+                                  {/* Indicador de estoque baixo */}
+                                  {peca.emEstoque <= peca.estoqueMinimo && (
+                                    <g transform={`translate(${pos.x + 55}, ${pos.y + 15})`}>
+                                      <circle
+                                        r="8"
+                                        fill="#f59e0b"
+                                        opacity="0.9"
+                                      />
+                                      <text
+                                        textAnchor="middle"
+                                        dominantBaseline="middle"
+                                        fontSize="10"
+                                        fill="white"
+                                        fontWeight="bold"
+                                        style={{ pointerEvents: "none" }}
+                                      >
+                                        !
+                                      </text>
+                                    </g>
+                                  )}
+
+                                  {/* Barra de vida útil */}
+                                  <g transform={`translate(${pos.x - 60}, ${pos.y + 20})`}>
+                                    <rect
+                                      width="120"
+                                      height="4"
+                                      rx="2"
+                                      fill="hsl(var(--muted))"
+                                    />
+                                    <rect
+                                      width={120 * (peca.vidaUtilRestante / peca.vidaUtil)}
+                                      height="4"
+                                      rx="2"
+                                      fill={peca.vidaUtilRestante / peca.vidaUtil > 0.5 ? "#10b981" : 
+                                           peca.vidaUtilRestante / peca.vidaUtil > 0.3 ? "#f59e0b" : "#ef4444"}
+                                    />
+                                  </g>
+                                </g>
+                              );
+                            })}
+                          </>
+                        )}
                       </svg>
                     </TransformComponent>
                   </>
@@ -863,6 +1125,25 @@ const MaquinaDetalhes = () => {
                     </div>
                   </div>
                   
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <h4 className="font-semibold text-sm text-muted-foreground mb-1">
+                        Valor Unitário
+                      </h4>
+                      <p className="text-lg font-bold text-green-600 dark:text-green-500">
+                        R$ {selectedPeca.valorUnitario.toLocaleString('pt-BR')}
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-sm text-muted-foreground mb-1">
+                        Data Última Compra
+                      </h4>
+                      <p className="text-lg">
+                        {new Date(selectedPeca.dataUltimaCompra).toLocaleDateString('pt-BR')}
+                      </p>
+                    </div>
+                  </div>
+                  
                   <div>
                     <h4 className="font-semibold text-sm text-muted-foreground mb-1">
                       Descrição
@@ -892,28 +1173,24 @@ const MaquinaDetalhes = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground mb-1">
-                      Conectado com
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedPeca.conectadoCom.map((conectadoId) => {
-                        const pecaConectada = pecasFicticias.find(
-                          (p) => p.id === conectadoId
-                        );
-                        return (
+                  {selectedPeca.subPecas.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-sm text-muted-foreground mb-2">
+                        Sub-Peças
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedPeca.subPecas.map((subPecaId, index) => (
                           <Badge
-                            key={conectadoId}
+                            key={index}
                             variant="outline"
-                            className="cursor-pointer hover:bg-accent"
-                            onClick={() => setSelectedPeca(pecaConectada || null)}
+                            className="text-xs"
                           >
-                            {pecaConectada?.nome}
+                            {subPecaId}
                           </Badge>
-                        );
-                      })}
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </TabsContent>
 
                 {/* Aba Manutenção */}
