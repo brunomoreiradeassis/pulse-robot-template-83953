@@ -406,10 +406,12 @@ const MaquinaDetalhes = () => {
           </Badge>
         </div>
 
-        {/* Controles e Filtros */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex flex-wrap items-center gap-4">
+        {/* Mapa de Peças */}
+        <Card className={`overflow-hidden ${isFullscreen ? "fixed inset-0 z-50 rounded-none" : ""}`}>
+          <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-4 flex-wrap">
+              <CardTitle>Diagrama de Componentes</CardTitle>
+              
               <div className="flex items-center gap-2">
                 <Button
                   variant={modoExplodido ? "default" : "outline"}
@@ -449,13 +451,7 @@ const MaquinaDetalhes = () => {
                 </Button>
               </div>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Mapa de Peças */}
-        <Card className={`overflow-hidden ${isFullscreen ? "fixed inset-0 z-50 rounded-none" : ""}`}>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Diagrama de Componentes</CardTitle>
+            
             <Button 
               variant="outline" 
               size="sm"
